@@ -1,0 +1,17 @@
+// Change directory
+cd <directory-name>
+
+// Make a directory
+mkdir <directory-name>
+
+// Show list file & folder
+ls
+ls -l
+ls -a
+
+// Create a file
+touch <file-name>
+
+// Open file
+open <file-name>
+vim <file-name>

@@ -1,0 +1,81 @@
+## Check version
+git --version
+
+## Set config values
+git config --global user.name "<name>"
+git config --global user.email "<email>"
+git config --list
+
+## Getting help
+git help config
+git config --help
+
+## Initialize git on the file
+cd <directory-name>
+git init
+
+## Check file status with git
+git status
+
+## Add files into staging area
+git add -A
+git add <file-name / directory-name>
+
+## Remove files from staging area
+git reset
+git reset <file_name>
+
+## Commit files
+git commit -m "<commmit title>"
+
+## Check the git log
+git log
+
+## Add remote repository
+git remote add origin <git-url>
+
+## Cloning a remote repository
+git clone <git-url> <where_to_clone>
+
+## Viewing the information about the remote repository
+git remote -v
+
+## Check the branch we were working on right now
+git branch -a
+
+## Pulling changes files(import files from git)
+git pull origin master
+
+## Pushing changes files(export files to git)
+git push origin master
+
+## Check the differences between old and new files
+git diff <file-name>
+
+## Roll back the files to the last version that has been pushed to the git
+git checkout <file-name>
+
+## Create branch for desired features
+git branch <branch_name>
+
+## Change the working to branch to what you want
+git checkout <branch_name>
+
+## Push to a different branch
+git push -u origin <branch_new_name>
+
+## Show all brach
+git branch -a
+
+## Create a gitignore(select files that is not going to add to git repository)
+# Create gitignore
+touch .gitignore
+# Write all the files name that we don't want to add
+<file-name>
+
+## Merge a Branch
+git merge branch1
+
+## Deleting a Branch
+git branch -d branch1
+git push origin --delete branch1
