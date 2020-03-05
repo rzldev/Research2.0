@@ -63,3 +63,6 @@ db.products.insertOne(
 
 ## Drop database
 db.dropDatabase()
+
+## Drop collections
+db.collections.drop()
