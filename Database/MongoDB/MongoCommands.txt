@@ -1,0 +1,65 @@
+## Start mongodb in terminal
+mongo
+
+## Getting help about mongo commands
+help
+
+## Show all database
+show dbs
+
+## Create or use database
+use <database_name>
+
+## Show database currently in
+db
+
+## Insert data into collection
+db.collection.insertOne({key1: value1, key2: value2, key3: value3})
+db.products.insertOne({_id: 1, name: "pen", price: 1.20})
+
+## Show collections inside currently database
+show collections
+
+## Show data inside collection
+db.collection.find()
+
+## Show some specific data]
+db.collection.find({<query>})
+db.products.find({name: "pen"})
+db.products.find({price: {$gt: 1}})
+
+# Adding projection
+db.collection.find({<query>}, {<projection>})
+db.products.find({id: 1}, {name: 1, _id: 0})
+
+## Update data from collections
+db.collections.updateOne({<id>}, {<new data>})
+db.products.updateOne({_id: 1}, {$set: {stock: 32}})
+
+## Delete data from collections
+db.collections.deleteOne({<id>})
+db.peoducts.deleteOne({_id: 2})
+
+## Create a data with relationships
+db.products.insertOne(
+{
+  _id: 2,
+  name: "Pencil",
+  price: 0.80,
+  stock: 12,
+  review: [
+    {
+      authorName: "James",
+      rating: 5,
+      review: "Fantastic"
+    },
+    {
+      authorName: "Jono",
+      rating: 4,
+      review: "Great"
+    }
+  ]
+})
+
+## Drop database
+db.dropDatabase()
