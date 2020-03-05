@@ -6,81 +6,140 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
+const _ = require("lodash");
+
 app.use(express.static("public"));
 
 app.set("view engine", "ejs");
 
-const date = require(__dirname + "/date.js");
+const mongoose = require("mongoose");
+mongoose.connect("mongodb://localhost:27017/todoDB", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
 
-const items = ["Playing games!", "Playing games!", "Playing games!"];
-const workItems = [];
+const itemSchema = new mongoose.Schema({
+  item: {
+    type: String,
+    required: [true, "Title can not be empty!"]
+  }
+});
+
+const Item = mongoose.model("Item", itemSchema);
+
+const customSchema = new mongoose.Schema({
+  name: String,
+  items: [itemSchema]
+});
+
+const CustomList = mongoose.model("List", customSchema);
+
+const eat = new Item({
+  item: "Eat!"
+});
+const play = new Item({
+  item: "Play!"
+});
+const sleep = new Item({
+  item: "Sleep!"
+});
 
 app.get("/", function(req, res) {
-  const date = new Date();
-  const currentDay = date.getDay();
-  const day = ""
+  const items = [];
 
-  switch (currentDay) {
-    case 0:
-      day = "Sunday";
-      break;
-    case 1:
-      day = "Monday";
-      break;
-    case 2:
-      day = "Tuesday";
-      break;
-    case 3:
-      day = "Wednesday";
-      break;
-    case 4:
-      day = "Thursday";
-      break;
-    case 5:
-      day = "Friday";
-      break;
-    case 6:
-      day = "Saturday";
-      break;
-    default:
-      console.log("Error: current day is equal to:" + currentDay);
-  }
+  Item.find(function(err, item) {
+    if (err) {
+      console.log(err);
 
-  res.render("list", {
-    title: day
+    } else {
+      if (item.length < 1) {
+        Item.insertMany([eat, play, sleep], function(err) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log("Data Successfully inserted!");
+          }
+        });
+
+        res.redirect("/");
+      }
+
+      res.render("todo-list", {
+        title: "Today",
+        listItems: item
+      });
+
+    }
   });
-
 });
 
-app.get("/todo-list", function(req, res) {
-  const day = date.getDate();
-
-  res.render("todo-list", {
-    title: day,
-    listItems: items
-  });
-
-});
-
-app.post("/todo-list", function(req, res) {
+app.post("/", function(req, res) {
   console.log(req.body);
   const item = req.body.newItem;
+  const name = req.body.submit;
 
-  if (req.body.submit === "Work") {
-    workItems.push(item);
-    res.redirect("/work");
+  const newItem = new Item({
+    item: item
+  });
+
+  if (name === "Today") {
+    newItem.save();
+
+    res.redirect("/");
+
   } else {
-    items.push(item);
-    res.redirect("/todo-list");
+    CustomList.findOne({
+      name: name
+    }, function(err, foundList) {
+      foundList.items.push(newItem);
+      foundList.save();
+
+      res.redirect("/" + name);
+
+    });
   }
 
 });
 
-app.get("/work", function(req, res) {
-  res.render("todo-list", {
-    title: "Work List",
-    listItems: workItems
-  });
+app.post("/delete", function(req, res) {
+  const itemId = req.body.deleteCheckbox;
+  if (itemId !== null) {
+    Item.findByIdAndRemove(itemId, function(err) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("Item has been deleted!");
+      }
+    });
+  }
+  res.redirect("/");
+})
+
+app.get("/:customName", function(req, res) {
+  const customName = _.lowerCase(req.params.customName);
+
+  CustomList.findOne({
+    name: customName
+  }, function(err, foundList) {
+    if (!err) {
+      if (!foundList) {
+        const newList = new CustomList({
+          name: customName,
+          items: [eat, play, sleep]
+        });
+
+        newList.save();
+        res.redirect("/" + customName);
+
+      } else {
+        res.render("todo-list", {
+          title: customName,
+          listItems: foundList.items
+        });
+
+      }
+    }
+  })
 });
 
 app.listen(3000, function() {

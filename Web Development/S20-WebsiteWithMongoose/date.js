@@ -19,5 +19,3 @@ exports.getDay = function() {
 
   return date.toLocaleDateString("en-US", options);
 }
-
-console.log(module.exports);
