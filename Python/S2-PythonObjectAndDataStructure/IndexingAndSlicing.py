@@ -7,6 +7,7 @@ print(my_list[0])
 print(my_list[-10])
 print(my_list[9])
 print(my_list[-1])
+print()
 
 ## Print some value inside the list
 # print(my_list[start : end : step])
@@ -18,14 +19,18 @@ print(my_list[-8:-2])
 print(my_list[0:10:2])
 print(my_list[-1:-10:-3])
 print(my_list[::2])
+print()
 
 ## Print reserved strings
 name = "Alexander Bob"
 print(name[:-4:-1])
 print(name[-5::-1])
+print()
 
 ## Print String the selected value of strings
 my_str = "https://www.google.com/"
 print(my_str[:5])
 print(my_str[8:-1])
 print(my_str[-5:-1])
+print("Hello World"[-3])
+print()
