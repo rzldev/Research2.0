@@ -76,7 +76,7 @@ app.get("/", function(req, res) {
 app.post("/", function(req, res) {
   console.log(req.body);
   const item = req.body.newItem;
-  const name = req.body.submit;
+  const name = _.capitalize(req.body.submit);
 
   const newItem = new Item({
     item: item
@@ -103,20 +103,36 @@ app.post("/", function(req, res) {
 
 app.post("/delete", function(req, res) {
   const itemId = req.body.deleteCheckbox;
+  const listName = _.capitalize(req.body.listName);
+
   if (itemId !== null) {
-    Item.findByIdAndRemove(itemId, function(err) {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log("Item has been deleted!");
-      }
-    });
+    if (listName === "Today") {
+      Item.findByIdAndRemove(itemId, function(err) {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log("Item has been deleted!");
+
+          res.redirect("/");
+        }
+      });
+
+    } else {
+      CustomList.findOneAndUpdate({name: listName}, {$pull: {items: {_id: itemId}}}, function(err, foundList) {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log("Item has been deleted!");
+
+          res.redirect("/" + listName);
+        }
+      });
+    }
   }
-  res.redirect("/");
-})
+});
 
 app.get("/:customName", function(req, res) {
-  const customName = _.lowerCase(req.params.customName);
+  const customName = _.capitalize(req.params.customName);
 
   CustomList.findOne({
     name: customName
